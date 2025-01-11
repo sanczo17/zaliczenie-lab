@@ -9,6 +9,7 @@
         Console.WriteLine("2. y = 2x² + 3");
         Console.WriteLine("3. y = 3x² + 2x - 3");
         Console.WriteLine("4. y = 5x² + 8x - 1");
+        Console.WriteLine("5. y = x²");
 
         int choice = int.Parse(Console.ReadLine());
 
@@ -18,6 +19,7 @@
             2 => x => 2 * x * x + 3,
             3 => x => 3 * x * x + 2 * x - 3,
             4 => x => 5 * x * x + 8 * x - 1,
+            5 => x => Math.Pow(x,2),
             _ => throw new ArgumentException("Nieprawidłowy wybór funkcji.")
         };
 
@@ -35,6 +37,8 @@
 
             ranges.Add((start, end));
         }
+        double a = ranges.First().Start;
+        double b = ranges.Last().End;
 
         Console.WriteLine("Wybierz metodę przetwarzania:");
         Console.WriteLine("1. TPL (Parallel)");
@@ -76,5 +80,11 @@
             }
         });
         
+        double result = IntegralCalculator.CalculateIntegralParallel(function, a, b, 1000, token);
+        Console.WriteLine($"Wynik całki: {result}");
+
+        Console.Write("Podaj nazwę pliku dla wykresu (np. wykres.png): ");
+        string fileName = Console.ReadLine();
+        IntegralCalculator.GeneratePlot(function, a, b, fileName);
     }
 }
