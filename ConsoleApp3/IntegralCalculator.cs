@@ -24,6 +24,7 @@ class IntegralCalculator
                 {
                     int progress = (int)((double)i / n * progressWidth);
                     Console.Write($"\r0%[{new string('=', progress)}{new string(' ', progressWidth - progress)}]100%");
+                    //Thread.Sleep(100);
                 }
             }
 

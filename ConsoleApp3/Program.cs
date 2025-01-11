@@ -8,6 +8,7 @@
         Console.WriteLine("1. y = 2x + 2x²");
         Console.WriteLine("2. y = 2x² + 3");
         Console.WriteLine("3. y = 3x² + 2x - 3");
+        Console.WriteLine("4. y = 5x² + 8x - 1");
 
         int choice = int.Parse(Console.ReadLine());
 
@@ -16,6 +17,7 @@
             1 => x => 2 * x + 2 * x * x,
             2 => x => 2 * x * x + 3,
             3 => x => 3 * x * x + 2 * x - 3,
+            4 => x => 5 * x * x + 8 * x - 1,
             _ => throw new ArgumentException("Nieprawidłowy wybór funkcji.")
         };
 
@@ -38,18 +40,27 @@
         Console.WriteLine("1. TPL (Parallel)");
         Console.WriteLine("2. ThreadPool");
         Console.WriteLine("3. Thread");
+        Console.WriteLine("4. All");
 
         int methodChoice = int.Parse(Console.ReadLine());
-        IProcessingMethod processor = methodChoice switch
+        
+        List<IProcessingMethod> processors = methodChoice switch
         {
-            1 => new TplProcessor(),
-            2 => new ThreadPoolProcessor(),
-            3 => new ThreadProcessor(),
+            1 => new List<IProcessingMethod> { new TplProcessor() },
+            2 => new List<IProcessingMethod> { new ThreadPoolProcessor() },
+            3 => new List<IProcessingMethod> { new ThreadProcessor() },
+            4 => new List<IProcessingMethod> { new TplProcessor(), new ThreadPoolProcessor(), new ThreadProcessor() },
             _ => throw new ArgumentException("Nieprawidłowy wybór metody.")
         };
 
         CancellationTokenSource cts = new();
         CancellationToken token = cts.Token;
+
+        foreach (var processor in processors)
+        {
+            Console.WriteLine($"\nUruchamianie: {processor.GetType().Name}");
+            processor.Process(ranges, function, token);
+        }
 
         Console.WriteLine("Rozpoczęto obliczenia...");
         Task.Run(() =>
@@ -64,7 +75,6 @@
                 }
             }
         });
-
-        processor.Process(ranges, function, token);
+        
     }
 }
